@@ -11,7 +11,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // Configure CORS to allow only your GitHub Pages domain
-const allowedOrigins = ["https://your-github-username.github.io"];
+const allowedOrigins = ["https://siddharth25-03.github.io"];
 app.use(
   cors({
     origin: (origin, callback) => {
