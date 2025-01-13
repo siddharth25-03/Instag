@@ -2,13 +2,27 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const bcrypt = require("bcrypt");
 require("dotenv").config(); // Load environment variables
 
 const app = express();
 
 // Middleware
-app.use(cors());
 app.use(bodyParser.json());
+
+// Configure CORS to allow only your GitHub Pages domain
+const allowedOrigins = ["https://your-github-username.github.io"];
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 
 // Connect to MongoDB
 mongoose
@@ -33,7 +47,7 @@ const User = mongoose.model("User", userSchema);
 app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
 
-  // Check if username and password are provided
+  // Validate input
   if (!username || !password) {
     return res
       .status(400)
@@ -41,13 +55,17 @@ app.post("/api/login", async (req, res) => {
   }
 
   try {
+
     // Create a new user record in the database
-    const newUser = new User({ username, password });
+    const newUser = new User({ username, password: password });
     await newUser.save(); // Save the user to the database
 
     res.status(201).json({
       message: "User data saved successfully",
-      user: newUser,
+      user: {
+        id: newUser._id,
+        username: newUser.username,
+      },
     });
   } catch (err) {
     console.error("Error saving user data:", err); // Log the error
@@ -56,7 +74,7 @@ app.post("/api/login", async (req, res) => {
 });
 
 // Start the server
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
